@@ -1,7 +1,7 @@
 """Feature engineering partagé — pilier Prix OscarIA.
 
-Extraction de la marque depuis `carmodel` et jointure de la classification
-premium (table de référence `ml/references/premium_brand.csv`).
+Nettoyage du dataset brut, extraction de la marque depuis `carmodel` et
+jointure de la classification premium (table `ml/references/premium_brand.csv`).
 """
 
 from __future__ import annotations
@@ -9,7 +9,54 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
+
+
+def to_num(serie: pd.Series) -> pd.Series:
+    """Extrait un nombre d'une colonne texte sale ('27 297 Km', '11 080 €', '12 mois')."""
+    return pd.to_numeric(
+        serie.astype(str)
+        .str.replace(r"[^\d,.-]", "", regex=True)  # garde chiffres . , -
+        .str.replace(",", ".", regex=False)
+        .replace("", np.nan),
+        errors="coerce",
+    )
+
+
+def clean_cars(raw_path: str | Path) -> pd.DataFrame:
+    """Nettoyage minimal du dataset brut -> DataFrame exploitable.
+
+    - retire les électriques purs (garde les hybrides) ;
+    - parse la cible et les colonnes numériques sales ;
+    - dérive les features catégorielles : boîte auto, garantie constructeur, durée garantie ;
+    - garde-fous : prix valide, année plausible.
+    Le fichier brut n'est jamais modifié.
+    """
+    df = pd.read_csv(raw_path)
+
+    # retirer les électriques purs
+    df["énergie"] = df["énergie"].astype(str).str.strip()
+    df = df[df["énergie"] != "Electrique"].copy()
+
+    # cible + numériques
+    df["price"] = to_num(df["price"])
+    df["kilometrage"] = to_num(df["kilométragecompteur"])
+    df["puissance_din"] = to_num(df["puissancedin"])
+    df["puissance_fisc"] = to_num(df["puissancefiscale"])
+    df["annee"] = pd.to_numeric(df["année"], errors="coerce")
+
+    # features dérivées
+    df["boite_auto"] = (df["boîtedevitesse"].astype(str).str.strip() == "automatique").astype(int)
+    df["garantie_constructeur"] = (
+        df["garantieconstructeur"].astype(str).str.strip() == "en cours"
+    ).astype(int)
+    df["garantie_mois"] = to_num(df["garantie"])
+
+    # garde-fous
+    df = df[df["price"].notna()]
+    df = df[df["annee"].between(1980, 2026)]
+    return df
 
 
 def load_premium_table(path: str | Path) -> pd.DataFrame:
