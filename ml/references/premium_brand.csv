@@ -1,0 +1,45 @@
+marque,palier,niveau
+PEUGEOT,generaliste,0
+RENAULT,generaliste,0
+CITROEN,generaliste,0
+VOLKSWAGEN,generaliste,0
+OPEL,generaliste,0
+FIAT,generaliste,0
+FORD,generaliste,0
+SEAT,generaliste,0
+MAZDA,generaliste,0
+NISSAN,generaliste,0
+TOYOTA,generaliste,0
+KIA,generaliste,0
+HYUNDAI,generaliste,0
+DACIA,generaliste,0
+SKODA,generaliste,0
+JEEP,generaliste,0
+CHEVROLET,generaliste,0
+DODGE,generaliste,0
+HONDA,generaliste,0
+SUZUKI,generaliste,0
+CUPRA,generaliste,0
+ABARTH,generaliste,0
+SMART,generaliste,0
+SUBARU,generaliste,0
+MG,generaliste,0
+IVECO,generaliste,0
+CHRYSLER,generaliste,0
+AUDI,premium,1
+BMW,premium,1
+MERCEDES,premium,1
+JAGUAR,premium,1
+LAND ROVER,premium,1
+VOLVO,premium,1
+LEXUS,premium,1
+ALFA ROMEO,premium,1
+MINI,premium,1
+DS,premium,1
+TESLA,premium,1
+PORSCHE,luxe,2
+FERRARI,luxe,2
+ASTON MARTIN,luxe,2
+BENTLEY,luxe,2
+MASERATI,luxe,2
+LOTUS,luxe,2
