@@ -1,0 +1,31 @@
+# OS
+.DS_Store
+
+# Notes perso locales (lues par agents, jamais commit)
+.local/
+
+# Python / uv
+__pycache__/
+*.py[cod]
+.venv/
+.env
+
+# Caches outils (ruff, mypy, pytest, ipython)
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.ipynb_checkpoints/
+.cache/
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Modèles entraînés (artefacts lourds)
+ml/models/
+
+# Données: arborescence versionnée, contenu ignoré (déposer les fichiers à part)
+ml/data/**
+!ml/data/**/
+!**/.gitkeep
