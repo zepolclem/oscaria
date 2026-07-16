@@ -1,0 +1,12 @@
+[project]
+name = "oscaria"
+version = "0.1.0"
+description = "OscarIA — assistant IA d'aide à la décision pour le vendeur particulier (workspace racine)"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["ml"]
