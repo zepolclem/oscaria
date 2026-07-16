@@ -12,6 +12,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+# Année de référence pour l'âge : données collectées ~2023
+# (miseencirculation jusqu'à 02/2023, année max 2022).
+REF_YEAR = 2023
+
 
 def to_num(serie: pd.Series) -> pd.Series:
     """Extrait un nombre d'une colonne texte sale ('27 297 Km', '11 080 €', '12 mois')."""
@@ -45,6 +49,7 @@ def clean_cars(raw_path: str | Path) -> pd.DataFrame:
     df["puissance_din"] = to_num(df["puissancedin"])
     df["puissance_fisc"] = to_num(df["puissancefiscale"])
     df["annee"] = pd.to_numeric(df["année"], errors="coerce")
+    df["age"] = REF_YEAR - df["annee"]  # âge du véhicule (années)
 
     # features dérivées
     df["boite_auto"] = (df["boîtedevitesse"].astype(str).str.strip() == "automatique").astype(int)
