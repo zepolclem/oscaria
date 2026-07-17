@@ -33,7 +33,8 @@ prix affiché artificiellement bas).
 
 ## Conséquences
 
-- Jeu de travail ramené à 2 340 lignes exploitables.
+- Jeu de travail ramené à 2 340 lignes exploitables. **Mise à jour 2026-07-17** : le correctif
+  du parseur (cf. ADR 0004) a récupéré 49 prix au format « T.T.C. (H.T.) » → **2 389 lignes**.
 - Périmètre implicite = véhicules thermiques et hybrides. Les électriques sont hors du champ
   du modèle — **limite à documenter** (attendu BC04).
 - Les colonnes batterie deviennent quasi inutiles ; la colonne « prix incluant la batterie »

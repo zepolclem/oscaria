@@ -16,3 +16,4 @@ une décision qui change donne une **nouvelle** fiche qui remplace l'ancienne (s
 | [0002](0002-perimetre-produit-50k.md) | Périmètre produit : marché ≤ 50 000 € | Accepté |
 | [0003](0003-sortie-fourchette-incertitude.md) | Sortie en fourchette de prix avec incertitude | Accepté |
 | [0004](0004-famille-de-modele.md) | Famille de modèle et arbitrage interprétabilité / performance | Accepté |
+| [0005](0005-biais-vendeurs-professionnels.md) | Biais de représentativité : 100 % vendeurs professionnels | Accepté (limite) |

@@ -1,7 +1,7 @@
 # ADR 0004 — Famille de modèle et arbitrage interprétabilité / performance
 
 - **Statut** : Accepté
-- **Date** : 2026-07-17
+- **Date** : 2026-07-17 (chiffres mis à jour le 2026-07-17 après correctif de parsing)
 
 ## Contexte
 
@@ -13,10 +13,11 @@ un chiffre plus fiable qu'un seul découpage.
 
 | Étape | Modèle | Coefficient de détermination | Erreur absolue moyenne |
 |-------|--------|------------------------------|------------------------|
-| Base | Régression linéaire (6 variables) | 0,69 | ~8 700 € |
-| + variables (marque premium, âge, boîte, garanties) | Régression linéaire | 0,73 | ~8 700 € |
-| + cible en logarithme | ElasticNet (linéaire régularisé) | 0,80 | ~7 100 € |
-| + arbres | HistGradientBoosting (renforcement d'arbres) | **0,88** (validation croisée) | ~5 400 € |
+| Régression linéaire (17 variables dont carburant en one-hot) | LinearRegression | 0,76 | 8 303 € |
+| + régularisation | ElasticNet (linéaire régularisé) | 0,76 | 7 800 € |
+| + cible en logarithme | ElasticNet (log) | 0,82 (validation croisée) | 6 174 € |
+| + arbres | HistGradientBoosting (renforcement d'arbres, log) | **0,89** (validation croisée) | 4 841 € |
+| + fréquence du modèle exact | HistGradientBoosting (log) | **0,89** (validation croisée par pli) | 4 815 € |
 
 Le passage aux arbres (*gradient boosting*, renforcement de gradient) capture la dépréciation
 non linéaire d'une voiture, que le modèle linéaire ne peut pas modéliser.
@@ -30,11 +31,17 @@ non linéaire d'une voiture, que le modèle linéaire ne peut pas modéliser.
 - **Ingénierie des variables** centralisée dans `ml/src/features.py` (`clean_cars`,
   `add_brand_features`) : marque extraite de façon robuste aux noms multi-mots (Alfa Romeo,
   Land Rover…), classée en 3 paliers premium (table `ml/references/premium_brand.csv`), âge
-  dérivé (2023 − année).
+  dérivé (2023 − année), variables motorisation (carburant, vignette crit'air, consommation),
+  fréquence du modèle exact (`modele_freq`, calculée sur le train uniquement).
+
+**Incident de parsing documenté** : le parseur générique initial concaténait tous les chiffres
+d'une chaîne, corrompant la consommation (« 4 l/100km » → 4100) et rejetant 49 prix au format
+« T.T.C. (H.T.) ». Corrigé (extraction du premier nombre) le 2026-07-17 ; toutes les métriques
+ont été recalculées. Illustre l'importance des contrôles de vraisemblance après chaque parsing.
 
 ## Alternatives écartées
 
-- **Rester au tout-linéaire** : plafonne à un coefficient de détermination de ~0,80, sous-estime
+- **Rester au tout-linéaire** : plafonne à un coefficient de détermination de ~0,82, sous-estime
   systématiquement le haut de gamme (relation non linéaire).
 - **Encodage de la marque par prix moyen** (*target encoding*) : plus performant seul mais
   risque de fuite de données (*data leakage*) et moins explicable → écarté au profit du palier
