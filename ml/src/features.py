@@ -12,29 +12,48 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-# Année de référence pour l'âge : données collectées ~2023
-# (miseencirculation jusqu'à 02/2023, année max 2022).
+# Référence pour l'âge : données collectées ~février 2023
+# (miseencirculation max = 01/02/2023). REF_DATE juste après -> âges tous positifs.
 REF_YEAR = 2023
+REF_DATE = pd.Timestamp("2023-03-01")
+
+# Catégories de carburant figées -> code ordinal stable entre les sous-échantillons
+# (les électriques purs sont retirés en amont).
+CARBURANTS = [
+    "Essence",
+    "Diesel",
+    "Hybride essence électrique",
+    "Hybride diesel électrique",
+]
 
 
 def to_num(serie: pd.Series) -> pd.Series:
-    """Extrait un nombre d'une colonne texte sale ('27 297 Km', '11 080 €', '12 mois')."""
+    """Extrait le PREMIER nombre d'une colonne texte sale.
+
+    Gère les espaces de milliers ('27 297 Km', '11 080\\xa0€') et la décimale
+    ',' ou '.' ('5,2 l/100km'). On prend le premier nombre et on s'arrête :
+    concaténer tous les chiffres corromprait les unités qui en contiennent
+    ('4 l/100km' doit donner 4, pas 4100).
+    """
+    ext = serie.astype(str).str.extract(
+        r"(-?\d[\d\s  ]*(?:[.,]\d+)?)", expand=False
+    )
     return pd.to_numeric(
-        serie.astype(str)
-        .str.replace(r"[^\d,.-]", "", regex=True)  # garde chiffres . , -
-        .str.replace(",", ".", regex=False)
-        .replace("", np.nan),
+        ext.str.replace(r"[\s  ]", "", regex=True)  # colle les milliers
+        .str.replace(",", ".", regex=False),
         errors="coerce",
     )
 
 
-def clean_cars(raw_path: str | Path) -> pd.DataFrame:
+def clean_cars(raw_path: str | Path, max_price: float | None = 50_000) -> pd.DataFrame:
     """Nettoyage minimal du dataset brut -> DataFrame exploitable.
 
     - retire les électriques purs (garde les hybrides) ;
     - parse la cible et les colonnes numériques sales ;
-    - dérive les features catégorielles : boîte auto, garantie constructeur, durée garantie ;
-    - garde-fous : prix valide, année plausible.
+    - dérive les features : boîte auto, garanties, première main, motorisation, âge fin ;
+    - garde-fous : prix valide, année plausible ;
+    - applique le périmètre produit `max_price` (défaut 50 000 €, décision ADR 0002) —
+      passer `max_price=None` pour les données complètes.
     Le fichier brut n'est jamais modifié.
     """
     df = pd.read_csv(raw_path)
@@ -49,7 +68,16 @@ def clean_cars(raw_path: str | Path) -> pd.DataFrame:
     df["puissance_din"] = to_num(df["puissancedin"])
     df["puissance_fisc"] = to_num(df["puissancefiscale"])
     df["annee"] = pd.to_numeric(df["année"], errors="coerce")
-    df["age"] = REF_YEAR - df["annee"]  # âge du véhicule (années)
+
+    # âge en années FRACTIONNAIRES depuis la date de mise en circulation
+    # (plus fin que l'année-millésime : janv. vs déc. = ~1 an d'écart réel ;
+    # 193 annonces ont d'ailleurs année ≠ année de mise en circulation).
+    # Repli sur l'année-millésime si la date ne se parse pas.
+    mec = pd.to_datetime(
+        df["miseencirculation"].astype(str).str.strip(),
+        format="%d/%m/%Y", errors="coerce",
+    )
+    df["age"] = ((REF_DATE - mec).dt.days / 365.25).fillna(REF_YEAR - df["annee"])
 
     # features dérivées
     df["boite_auto"] = (df["boîtedevitesse"].astype(str).str.strip() == "automatique").astype(int)
@@ -57,10 +85,31 @@ def clean_cars(raw_path: str | Path) -> pd.DataFrame:
         df["garantieconstructeur"].astype(str).str.strip() == "en cours"
     ).astype(int)
     df["garantie_mois"] = to_num(df["garantie"])
+    df["premiere_main"] = (
+        df["premièremain(déclaratif)"].astype(str).str.strip() == "oui"
+    ).astype(int)
+
+    # motorisation / pollution
+    # énergie -> code ordinal stable (catégories figées, inconnu = -1)
+    df["energie_code"] = pd.Categorical(
+        df["énergie"], categories=CARBURANTS
+    ).codes
+    df["critair"] = to_num(df["crit'air"])            # vignette pollution 1..4
+    df["conso"] = to_num(df["consommationmixte"])     # "5.2 l/100km" -> 5.2
+
+    # modèle exact nettoyé (retours-ligne, espaces multiples) — encodage
+    # (ex. fréquence) à calculer sur le train uniquement, dans les notebooks
+    df["modele"] = (
+        df["carmodel"].astype(str).str.strip().str.replace(r"\s+", " ", regex=True)
+    )
 
     # garde-fous
     df = df[df["price"].notna()]
     df = df[df["annee"].between(1980, 2026)]
+
+    # périmètre produit (ADR 0002)
+    if max_price is not None:
+        df = df[df["price"] <= max_price]
     return df
 
 
