@@ -18,3 +18,4 @@ une décision qui change donne une **nouvelle** fiche qui remplace l'ancienne (s
 | [0004](0004-famille-de-modele.md) | Famille de modèle et arbitrage interprétabilité / performance | Accepté |
 | [0005](0005-biais-vendeurs-professionnels.md) | Biais de représentativité : 100 % vendeurs professionnels | Accepté (limite) |
 | [0006](0006-dataset-cardd-objectif-multilabel.md) | Pilier DL : dataset CarDD + objectif multi-label type de dégât | Accepté |
+| [0007](0007-biais-source-mesure.md) | Validation externe : biais de source mesuré (pas de généralisation au réel) | Accepté (limite) |
