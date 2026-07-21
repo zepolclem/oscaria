@@ -11,7 +11,8 @@ Certification visée : **bloc BC04** (RNCP38616) — « mener un projet IA en é
 ## Périmètre
 
 1. **ML — pilier Prix (priorité actuelle)** : restituer une **fourchette de prix avec incertitude**, pas un prix ponctuel (exigence produit).
-2. **DL — classifieur d'état (plus tard)** : reconnaissance binaire **intact / abîmé** sur photos.
+2. **DL — modèle d'état (en cours)** : état carrosserie depuis photos. La forme de la cible (classification binaire **intact / abîmé**, ou **localisation de zones** — détection/segmentation) se décide **après inspection des labels** des datasets (ADR à venir).
+3. **Démo produit — URL annonce → estimation (plus tard)** : coller l'URL d'une annonce → une API sur le VPS renvoie fourchette de prix (ML texte) + zones/points d'attention (DL photos) + score.
 
 Aucun choix de méthode ou de modèle n'est figé à ce stade : ces décisions se prennent **après** le choix des datasets.
 
