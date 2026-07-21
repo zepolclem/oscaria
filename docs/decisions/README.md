@@ -17,3 +17,4 @@ une décision qui change donne une **nouvelle** fiche qui remplace l'ancienne (s
 | [0003](0003-sortie-fourchette-incertitude.md) | Sortie en fourchette de prix avec incertitude | Accepté |
 | [0004](0004-famille-de-modele.md) | Famille de modèle et arbitrage interprétabilité / performance | Accepté |
 | [0005](0005-biais-vendeurs-professionnels.md) | Biais de représentativité : 100 % vendeurs professionnels | Accepté (limite) |
+| [0006](0006-dataset-cardd-objectif-multilabel.md) | Pilier DL : dataset CarDD + objectif multi-label type de dégât | Accepté |

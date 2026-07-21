@@ -24,8 +24,11 @@ build/
 
 # Modèles entraînés (artefacts lourds)
 ml/models/
+dl/models/
 
 # Données: arborescence versionnée, contenu ignoré (déposer les fichiers à part)
 ml/data/**
 !ml/data/**/
+dl/data/**
+!dl/data/**/
 !**/.gitkeep
