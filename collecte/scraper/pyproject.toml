@@ -1,0 +1,15 @@
+[project]
+name = "oscaria-collecte"
+version = "0.1.0"
+description = "OscarIA — collecte d'annonces (leboncoin) vers Postgres + MinIO"
+requires-python = ">=3.12"
+dependencies = [
+    "curl-cffi>=0.7",      # handshake TLS d'un vrai Chrome -> passe le gate DataDome
+    "psycopg[binary]>=3.2",
+    "boto3>=1.35",         # MinIO (S3)
+    "pandas>=2.2",         # export du dataset (dataset.py)
+    "pyarrow>=17",         # backend Parquet de pandas.to_parquet
+]
+
+[tool.uv]
+package = false

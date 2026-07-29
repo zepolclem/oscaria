@@ -10,12 +10,11 @@ une décision qui change donne une **nouvelle** fiche qui remplace l'ancienne (s
 
 ## Index
 
-| N° | Décision | Statut |
-|----|----------|--------|
-| [0001](0001-dataset-et-retrait-electriques.md) | Dataset candidat + retrait des véhicules électriques purs | Accepté |
-| [0002](0002-perimetre-produit-50k.md) | Périmètre produit : marché ≤ 50 000 € | Accepté |
-| [0003](0003-sortie-fourchette-incertitude.md) | Sortie en fourchette de prix avec incertitude | Accepté |
-| [0004](0004-famille-de-modele.md) | Famille de modèle et arbitrage interprétabilité / performance | Accepté |
-| [0005](0005-biais-vendeurs-professionnels.md) | Biais de représentativité : 100 % vendeurs professionnels | Accepté (limite) |
-| [0006](0006-dataset-cardd-objectif-multilabel.md) | Pilier DL : dataset CarDD + objectif multi-label type de dégât | Accepté |
-| [0007](0007-biais-source-mesure.md) | Validation externe : biais de source mesuré (pas de généralisation au réel) | Accepté (limite) |
+*(vide — remise à zéro du 2026-07-29)*
+
+Les dix fiches précédentes ont été supprimées : la moitié décrivaient un dataset de prix abandonné,
+et le pilier État a été recadré autour d'un entraînement sur CarDD. Les fiches 0001 à 0007 restent
+consultables dans l'historique `git` (branche `main`).
+
+La numérotation repart de **0001**. Voir le plan en cours dans
+[`docs/plans/`](../plans/).

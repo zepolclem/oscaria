@@ -1,6 +1,0 @@
-# Secrets — ne jamais committer
-.env
-
-# Dépendances / build
-node_modules/
-package-lock.json
