@@ -5,7 +5,10 @@
 services:
   app:
     build:
-      context: ..
+      # Chemins relatifs au project-directory (racine du repo cloné), pas au
+      # dossier de ce fichier : Coolify invoque `docker compose
+      # --project-directory <clone> -f <clone>/deploy/compose.yaml`.
+      context: .
       dockerfile: deploy/Dockerfile
     environment:
       - SERVICE_FQDN_APP_8000
