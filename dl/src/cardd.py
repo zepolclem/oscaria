@@ -2,7 +2,9 @@
 
 Cible = vecteur binaire 6-dim (présence de chaque type de dégât sur l'image).
 6 classes dans l'ordre des category_id COCO (id 1..6), figé pour un encodage stable.
-Décision : ADR 0006.
+
+Décision : `docs/decisions/0001-cible-multi-etiquette-cardd.md`. Portée restreinte par la fiche
+0002 : ce modèle type un dégât sur un **gros plan**, il ne détecte rien sur une photo d'annonce.
 """
 
 from __future__ import annotations
@@ -66,4 +68,56 @@ class CarDDMultiLabel(Dataset):
         y = self.label_matrix()
         pos = y.sum(0)
         neg = len(self.ids) - pos
+        return neg / pos.clamp(min=1)
+
+
+class TuilesIntactes(Dataset):
+    """Tuiles de carrosserie intacte (fabriquées par `negatifs.py`) — cible `[0,0,0,0,0,0]`.
+
+    En multi-étiquette, « intact » n'est pas une 7e classe : c'est l'absence de toutes. La perte
+    d'entropie croisée binaire gère ce cas nativement ; il suffisait de fournir des exemples.
+    """
+
+    def __init__(self, dossier: str | Path, transform=None):
+        self.fichiers = sorted(Path(dossier).glob("*.jpg"))
+        self.transform = transform
+
+    def __len__(self) -> int:
+        return len(self.fichiers)
+
+    def __getitem__(self, idx: int):
+        img = Image.open(self.fichiers[idx]).convert("RGB")
+        if self.transform is not None:
+            img = self.transform(img)
+        return img, torch.zeros(len(CLASSES))
+
+
+class CarDDAvecNegatifs(Dataset):
+    """CarDD (abîmées) + tuiles intactes, avec `label_matrix()`/`pos_weight()` recalculés.
+
+    Les négatifs augmentent le compte de négatifs de **chaque** classe, donc `pos_weight` monte :
+    les classes restent compensées face au volume ajouté. `train_cardd.train()` fonctionne sans
+    modification.
+    """
+
+    def __init__(self, cardd_ds: CarDDMultiLabel, tuiles_ds: TuilesIntactes):
+        self.cardd = cardd_ds
+        self.tuiles = tuiles_ds
+
+    def __len__(self) -> int:
+        return len(self.cardd) + len(self.tuiles)
+
+    def __getitem__(self, idx: int):
+        if idx < len(self.cardd):
+            return self.cardd[idx]
+        return self.tuiles[idx - len(self.cardd)]
+
+    def label_matrix(self) -> torch.Tensor:
+        return torch.cat([self.cardd.label_matrix(),
+                          torch.zeros(len(self.tuiles), len(CLASSES))])
+
+    def pos_weight(self) -> torch.Tensor:
+        y = self.label_matrix()
+        pos = y.sum(0)
+        neg = len(self) - pos
         return neg / pos.clamp(min=1)

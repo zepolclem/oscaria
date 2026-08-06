@@ -1,4 +1,4 @@
-"""Localisation des dégâts SANS ré-entraînement — deux méthodes en duel (ADR 0008).
+"""Localisation des dégâts SANS ré-entraînement — deux méthodes en duel.
 
 1. `tile_scores`  : fenêtre glissante multi-échelle (idée utilisateur) — chaque tuile passe
    dans le classifieur multi-label ; les probas s'accumulent en cartes de score par classe.
@@ -6,7 +6,14 @@
    une passe, pas de découpage.
 
 Les deux produisent une carte [0..1] à la taille de l'image parente ; `map_to_box` en tire
-une boîte englobante. Évaluation contre les vraies boîtes CarDD test dans le notebook 04.
+une boîte englobante.
+
+> **Attention à la portée.** Ces fonctions supposent un modèle qui répond correctement sur les
+> tuiles qu'on lui donne. Avec `cardd_baseline.pt` sur des photos d'annonce, ce n'est pas le cas :
+> une tuile de 224 px prise dans une voiture entière ne contient souvent que de la peinture ou du
+> bitume — hors distribution d'entraînement — et le réseau y sort des valeurs élevées arbitraires.
+> Mesuré dans `docs/decisions/0002-non-transfert-cardd-photos-annonce.md`. Utile sur des gros plans,
+> trompeur sur une photo d'annonce.
 """
 
 from __future__ import annotations
@@ -70,6 +77,52 @@ def tile_scores(
             score[:, y : y + h, x : x + w] += p[:, None, None]
             count[y : y + h, x : x + w] += 1
     return score / np.maximum(count, 1)
+
+
+@torch.no_grad()
+def tile_max_probs(
+    model, classes, device, img: Image.Image,
+    tile_sizes=(224, 448), overlap: float = 0.5, batch_size: int = 64,
+) -> tuple[dict[str, float], dict[str, tuple]]:
+    """Probabilité **maximale sur les tuiles** par classe, et la tuile qui l'a déclenchée.
+
+    Différence avec `tile_scores`, qui moyenne les tuiles recouvrant chaque pixel : la moyenne
+    lisse le bruit (bon pour une carte de chaleur) mais dilue le pic. Une tuile à 0,90 noyée
+    dans huit tuiles à 0,10 ressort à 0,19. Pour répondre « ce dégât est-il présent quelque
+    part sur la photo ? », c'est le maximum qui fait sens.
+
+    Renvoie `(probas_max_par_classe, boite_declenchante_par_classe)`, la boîte au format
+    (x, y, largeur, hauteur) dans les coordonnées de l'image fournie.
+    """
+    model.eval()
+    rgb = img.convert("RGB")
+    W, H = rgb.size
+    x_full = _TO_TENSOR(rgb)
+
+    crops, boxes = [], []
+    for s in tile_sizes:
+        stride = max(1, int(s * (1 - overlap)))
+        w, h = min(s, W), min(s, H)
+        for y in _positions(H, h, stride):
+            for x in _positions(W, w, stride):
+                tile = x_full[:, y : y + h, x : x + w].unsqueeze(0)
+                crops.append(TF.interpolate(tile, size=(224, 224), mode="bilinear",
+                                            align_corners=False)[0])
+                boxes.append((x, y, w, h))
+
+    meilleur = np.zeros(len(classes))
+    boite = [None] * len(classes)
+    for i in range(0, len(crops), batch_size):
+        probs = torch.sigmoid(
+            model(torch.stack([_NORM(c) for c in crops[i : i + batch_size]]).to(device))
+        ).cpu().numpy()
+        for p, b in zip(probs, boxes[i : i + batch_size]):
+            gagne = p > meilleur
+            meilleur = np.where(gagne, p, meilleur)
+            for k in np.nonzero(gagne)[0]:
+                boite[k] = b
+    return ({c: float(v) for c, v in zip(classes, meilleur)},
+            {c: b for c, b in zip(classes, boite)})
 
 
 def gradcam_map(model, classes, device, img: Image.Image, class_idx: int) -> np.ndarray:

@@ -1,6 +1,6 @@
 """Détourage du véhicule sur les photos d'annonce — pré-traitement du pilier État.
 
-Motivation (idée utilisateur, ADR 0009) : les photos leboncoin cadrent la voiture entière à
+Motivation (idée utilisateur) : les photos leboncoin cadrent la voiture entière à
 plusieurs mètres, là où CarDD est fait de gros plans de dégâts. Recadrer sur le véhicule sert
 **deux** objectifs, le second étant le plus important :
 
@@ -14,8 +14,12 @@ Effet de bord utile : **l'absence de détection est déjà une information de ty
 document, un habitacle ou une pièce détachée seule ne déclenchent pas un détecteur de véhicules.
 
 Méthode : détecteur pré-entraîné sur COCO (`Faster R-CNN`), en **inférence pure** — aucun
-ré-entraînement. L'ADR 0008 avait établi que seul le *backward* de détection est cassé sur MPS ;
-l'inférence, elle, fonctionne.
+ré-entraînement. Mesuré en juillet 2026 : seule la passe arrière de détection est cassée sur MPS,
+l'inférence fonctionne. Coût mesuré : ~1,25 s par photo sur M1 Pro.
+
+Gain chiffré : le détourage fait passer la précision moyenne du binaire de 0,615 à 0,657 à 224 px,
+et de 0,672 à 0,689 à 384 px — pour un coût de calcul **inférieur**, les images recadrées étant plus
+petites à décoder. Voir `docs/decisions/0004-binaire-domaine-annonce.md`.
 """
 
 from __future__ import annotations
