@@ -1,4 +1,4 @@
-"""Sélection du device et détection machine — pilier État (DL) OscarIA.
+"""Sélection du device et détection machine — pilier DL OscarIA.
 
 Deux besoins distincts :
 - `get_device()` : choix du device **au runtime** (MPS sur Mac, CUDA sur le PC, repli CPU).

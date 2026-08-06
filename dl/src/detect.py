@@ -1,14 +1,8 @@
-"""Détourage du véhicule sur les photos d'annonce — pré-traitement du pilier État.
+"""Détourage du véhicule sur les photos d'annonce — outil générique du pilier DL.
 
-Motivation (idée utilisateur) : les photos leboncoin cadrent la voiture entière à
-plusieurs mètres, là où CarDD est fait de gros plans de dégâts. Recadrer sur le véhicule sert
-**deux** objectifs, le second étant le plus important :
-
-1. **Résolution** — on récupère les pixels perdus dans le ciel, le gravier et la haie.
-2. **Suppression du confondant** — l'EDA d'inspection a mesuré un écart de cadrage entre classes
-   déclarées (ratio médian 0,75 pour `damaged` contre 1,0 pour `excellent_condition`). Tant qu'on
-   garde le fond, un réseau peut apprendre « allée de gravier = abîmé » au lieu de regarder la
-   tôle. Le détourage retire ce raccourci visuel.
+Recadrer sur le véhicule sert deux objectifs : récupérer la **résolution** perdue dans le fond
+(ciel, gravier, haie) et **supprimer le confondant** de décor — un réseau ne doit pas apprendre
+le fond à la place du sujet.
 
 Effet de bord utile : **l'absence de détection est déjà une information de type de vue.** Un
 document, un habitacle ou une pièce détachée seule ne déclenchent pas un détecteur de véhicules.
@@ -17,9 +11,8 @@ Méthode : détecteur pré-entraîné sur COCO (`Faster R-CNN`), en **inférence
 ré-entraînement. Mesuré en juillet 2026 : seule la passe arrière de détection est cassée sur MPS,
 l'inférence fonctionne. Coût mesuré : ~1,25 s par photo sur M1 Pro.
 
-Gain chiffré : le détourage fait passer la précision moyenne du binaire de 0,615 à 0,657 à 224 px,
-et de 0,672 à 0,689 à 384 px — pour un coût de calcul **inférieur**, les images recadrées étant plus
-petites à décoder. Voir `docs/decisions/0004-binaire-domaine-annonce.md`.
+Gains chiffrés mesurés sur l'arc dégâts (abandonné) : voir l'historique git, tombeau au tip de
+`reset/cardd-baseline`.
 """
 
 from __future__ import annotations

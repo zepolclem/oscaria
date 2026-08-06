@@ -1,15 +1,16 @@
-# dl/ — Pilier État (carrosserie) : process et conventions
+# dl/ — Pilier Plaques (détection + floutage) : process et conventions
 
 > Ce fichier cadre le **process**. Aucun choix de modèle n'y figure : ces décisions se
 > prennent après le choix du dataset, et se consignent dans `docs/decisions/`.
 
 ## Objectif du pilier
 
-Détecter l'**état carrosserie** d'un véhicule depuis ses **photos**, pour alimenter le pilier
-Prix (décote) et informer l'acheteur (points d'attention). La **forme de la cible** —
-classification binaire **intact / abîmé**, ou **localisation de zones** (détection /
-segmentation) — n'est pas figée : elle se décide **après inspection des labels** des datasets
-candidats (les labels disponibles commandent l'objectif atteignable).
+**Détecter les plaques d'immatriculation** sur les photos d'annonce et les **flouter** avant
+tout livrable (besoin RGPD). Détection de boîte + flou uniquement — **pas de lecture/OCR** de
+la plaque : lire serait un traitement de donnée personnelle supplémentaire, contraire à la
+minimisation. Le floutage des **visages** viendra dans un second temps. Hiérarchie des
+métriques : **rappel prioritaire** (une plaque ratée = fuite RGPD ; un faux positif ne coûte
+qu'un flou en trop).
 
 ## Itération datasets
 
