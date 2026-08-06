@@ -9,4 +9,4 @@ dependencies = []
 package = false
 
 [tool.uv.workspace]
-members = ["ml", "dl", "collecte/scraper"]
+members = ["ml", "dl", "collecte/scraper", "app"]

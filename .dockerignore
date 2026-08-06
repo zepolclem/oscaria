@@ -1,0 +1,13 @@
+# Garde le contexte de build Docker minimal : sans ces exclusions,
+# les datasets (parquet, images) et le venv partent au démon Docker (des Go).
+.git/
+.venv/
+.local/
+docs/
+**/data/
+**/notebooks/
+**/models/
+**/references/
+**/.env
+**/__pycache__/
+*.ipynb

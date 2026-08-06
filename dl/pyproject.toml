@@ -1,7 +1,7 @@
 [project]
 name = "oscaria-dl"
 version = "0.1.0"
-description = "OscarIA — pilier État carrosserie (DL vision)"
+description = "OscarIA — pilier Plaques : détection + floutage (DL vision)"
 requires-python = ">=3.12"
 dependencies = [
     "torch>=2.2",
@@ -13,6 +13,7 @@ dependencies = [
     "pillow>=10.0",
     "jupyterlab>=4.0",
     "ipykernel>=6.29",
+    "defusedxml>=0.7.1",
 ]
 
 [tool.uv]

@@ -1,0 +1,17 @@
+# Application web OscarIA pour Coolify.
+# Coolify > Projet > + New Resource > Docker Compose (repo git, compose = deploy/compose.yaml).
+# SERVICE_FQDN_APP_8000 : sa simple présence fait générer par Coolify le domaine
+# + certificat HTTPS (labels Traefik) pointant vers le port 8000 du service.
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    environment:
+      - SERVICE_FQDN_APP_8000
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/sante')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
