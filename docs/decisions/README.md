@@ -12,8 +12,7 @@ une décision qui change donne une **nouvelle** fiche qui remplace l'ancienne (s
 
 | # | fiche | date | en une ligne |
 |---|---|---|---|
-
-*(aucune fiche pour l'instant — le pilier plaques démarre)*
+| 0001 | [Baseline détection plaques](0001-baseline-detection-plaques.md) | 2026-08-06 | dataset car-plate-detection gardé ; Faster R-CNN MobileNetV3 fine-tuné sur CPU (backward MPS corrompu — mesuré) ; rappel prioritaire, pas de test interne |
 
 Les fiches 0001–0007 de l'arc « reconnaissance de dégâts » ont été supprimées lors de la
 remise à zéro du 2026-08-06 ; elles restent consultables dans l'historique git (commit
