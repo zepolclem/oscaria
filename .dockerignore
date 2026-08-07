@@ -7,6 +7,8 @@ docs/
 **/data/
 **/notebooks/
 **/models/
+# … sauf le checkpoint plaques, embarqué dans l'image (versionné git add -f).
+!dl/models/plaques_baseline.pt
 **/references/
 **/.env
 **/__pycache__/
