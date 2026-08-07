@@ -32,7 +32,11 @@ COPY --from=build /code/.venv /code/.venv
 COPY app/src app/src
 # Code du pilier plaques : l'app importe flouter/train_plaques (inférence seule).
 COPY dl/src dl/src
-ENV PYTHONPATH=/code/dl/src
+# Checkpoint versionné (git add -f, décision utilisateur 2026-08-07) : embarqué
+# dans l'image — pas de volume ni de téléchargement au démarrage.
+COPY dl/models/plaques_baseline.pt dl/models/plaques_baseline.pt
+ENV PYTHONPATH=/code/dl/src \
+    CHEMIN_MODELE=/code/dl/models/plaques_baseline.pt
 
 # /data : point de montage du volume modèle — propriété d'oscaria pour que le
 # téléchargement au premier démarrage puisse y écrire.
