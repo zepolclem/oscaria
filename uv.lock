@@ -1980,6 +1980,9 @@ source = { virtual = "app" }
 dependencies = [
     { name = "fastapi" },
     { name = "gradio" },
+    { name = "pillow" },
+    { name = "torch" },
+    { name = "torchvision" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
@@ -1987,6 +1990,9 @@ dependencies = [
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115" },
     { name = "gradio", specifier = ">=5.0" },
+    { name = "pillow", specifier = ">=10.0" },
+    { name = "torch", specifier = ">=2.2" },
+    { name = "torchvision", specifier = ">=0.17" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.34" },
 ]
 

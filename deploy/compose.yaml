@@ -9,9 +9,20 @@ services:
       dockerfile: deploy/Dockerfile
     environment:
       - SERVICE_FQDN_APP_8000
+      # Modèle plaques : téléchargé au premier démarrage dans le volume /data.
+      # URL_MODELE = URL API de l'asset de release (repo privé → GITHUB_TOKEN requis,
+      # à définir dans Coolify, jamais ici).
+      - CHEMIN_MODELE=${CHEMIN_MODELE:-/data/plaques_baseline.pt}
+      - URL_MODELE=${URL_MODELE:-}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+    volumes:
+      - donnees-modele:/data
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/sante')"]
       interval: 10s
       timeout: 5s
       retries: 5
     restart: unless-stopped
+
+volumes:
+  donnees-modele:

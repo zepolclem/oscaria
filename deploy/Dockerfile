@@ -30,8 +30,13 @@ ENV PATH="/code/.venv/bin:$PATH" \
 
 COPY --from=build /code/.venv /code/.venv
 COPY app/src app/src
+# Code du pilier plaques : l'app importe flouter/train_plaques (inférence seule).
+COPY dl/src dl/src
+ENV PYTHONPATH=/code/dl/src
 
-RUN useradd --create-home oscaria
+# /data : point de montage du volume modèle — propriété d'oscaria pour que le
+# téléchargement au premier démarrage puisse y écrire.
+RUN useradd --create-home oscaria && mkdir -p /data && chown oscaria /data
 USER oscaria
 
 EXPOSE 8000

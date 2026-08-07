@@ -30,7 +30,6 @@ from torchvision.models.detection import fasterrcnn_mobilenet_v3_large_fpn
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
 from device import get_device
-from plaques import PlaquesDataset, charger_annotations, split_train_val
 
 CONFIG_DEFAUT = {
     "modele": "fasterrcnn_mobilenet_v3_large_fpn",
@@ -56,6 +55,10 @@ def construire_modele(num_classes: int = 2):
 
 def entrainer(donnees, sortie, config=None, device=None, journal=print):
     """Boucle d'entraînement complète ; renvoie `(modèle, historique des pertes)`."""
+    # Import différé : le parsing XML (defusedxml) n'est requis qu'à l'entraînement —
+    # l'app web n'embarque que l'inférence (charger_checkpoint/predire).
+    from plaques import PlaquesDataset, charger_annotations, split_train_val
+
     config = {**CONFIG_DEFAUT, **(config or {})}
     # CPU par défaut : backward MPS corrompu (gradients NaN silencieux), cf. docstring.
     device = device or torch.device("cpu")
