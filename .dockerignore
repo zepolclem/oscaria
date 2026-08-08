@@ -7,8 +7,12 @@ docs/
 **/data/
 **/notebooks/
 **/models/
-# … sauf le checkpoint plaques, embarqué dans l'image (versionné git add -f).
+# … sauf les modèles servis par l'application, qui DOIVENT entrer dans l'image :
+# le conteneur ne télécharge rien au démarrage, donc démarrer = savoir répondre.
+# Le checkpoint plaques est versionné par `git add -f` (décision du 2026-08-07) ;
+# `app/models/` (pilier Prix, ~170 Ko) est versionné normalement.
 !dl/models/plaques_baseline.pt
+!app/models/
 **/references/
 **/.env
 **/__pycache__/

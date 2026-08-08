@@ -7,6 +7,36 @@ dependencies = []
 
 [tool.uv]
 package = false
+# Les deux variantes de PyTorch s'excluent : sans cette déclaration, uv refuse deux index
+# pour `torch` dans la même tranche de résolution (« conflicting indexes for package torch
+# in split sys_platform == 'linux' »). Les extras portent le même nom dans `app` et `dl`,
+# chaque membre a donc sa paire.
+conflicts = [
+    [{ package = "oscaria-app", extra = "cpu" }, { package = "oscaria-app", extra = "cu128" }],
+    [{ package = "oscaria-dl", extra = "cpu" }, { package = "oscaria-dl", extra = "cu128" }],
+]
 
 [tool.uv.workspace]
 members = ["ml", "dl", "collecte/scraper", "app"]
+
+# --- Index PyTorch --------------------------------------------------------------------
+# Déclarés ici pour tout l'espace de travail ; ce sont les `[tool.uv.sources]` de `app/` et
+# `dl/` qui décident quel paquet y va (les sources doivent vivre dans le membre qui porte
+# les extras — à la racine, uv les rattacherait aux extras de la racine, qui n'existent pas).
+#
+# Motif : sur Linux, PyPI sert la variante CUDA de torch — 2,9 Go de pilotes `nvidia-*` plus
+# 651 Mo de `triton`. L'image de l'application tourne sur CPU (`page_plaques.py` fixe
+# `torch.device("cpu")`) : elle embarquait 3,5 Go inutilisables, sur un serveur à 2 vCPU.
+#
+# `explicit = true` : ces index ne sont consultés que pour les paquets qui les désignent
+# nommément. Sans ça, ils seraient interrogés pour TOUTES les dépendances du projet, avec le
+# risque qu'un paquet quelconque en sorte dans une version inattendue.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

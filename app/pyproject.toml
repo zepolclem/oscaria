@@ -7,9 +7,38 @@ dependencies = [
     "fastapi>=0.115",
     "uvicorn[standard]>=0.34",
     "gradio>=5.0",
+    # Pilier plaques : détection Faster R-CNN (inférence seule) + traitement d'image.
     "torch>=2.2",
     "torchvision>=0.17",
     "pillow>=10.0",
+    # Pilier prix : chargement et exécution de app/models/prix.joblib. La version de
+    # scikit-learn doit rester compatible avec celle qui a produit l'artefact — elle est
+    # inscrite dans app/models/prix.json, à vérifier avant toute montée de version majeure.
+    "scikit-learn>=1.9",
+    "pandas>=2.2",
+    "joblib>=1.4",
+]
+
+# Sur Linux, PyPI sert la variante CUDA de torch : 2,9 Go de pilotes `nvidia-*` plus 651 Mo
+# de `triton`, pour un conteneur qui tourne sur CPU (`page_plaques.py` fixe
+# `torch.device("cpu")`). L'index `pytorch-cpu` fait tomber l'image de 5,53 Go à 1,5 Go.
+#
+# Le marqueur `sys_platform == 'linux'` protège macOS : le Mac n'est jamais routé vers un
+# index PyTorch, il reste sur PyPI, et le backend MPS avec lui. Router tout le monde vers
+# l'index CPU serait plus court à écrire et ferait basculer l'entraînement local sur
+# processeur **sans aucun message** — pas d'erreur, juste dix fois plus lent.
+#
+# Pour une machine Linux avec GPU NVIDIA, voir `dl/src/device.py:recommend_install()` :
+# le basculement CUDA se fait en surcouche du `sync`, pas dans ce fichier. La forme
+# « deux extras cpu/cu128 » de la documentation uv a été essayée et refusée ici — uv ignore
+# `[tool.uv] conflicts` dans cet espace de travail (membres en `package = false`), et
+# rejette alors deux index explicites pour un même paquet.
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },
+]
+torchvision = [
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },
 ]
 
 [tool.uv]
