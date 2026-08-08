@@ -10,3 +10,16 @@ package = false
 
 [tool.uv.workspace]
 members = ["ml", "dl", "collecte/scraper", "app"]
+
+# Sur Linux (= le serveur Coolify, sans GPU), PyPI livre torch en build CUDA :
+# ~5 Go de bibliothèques NVIDIA inutiles qui ont saturé le disque du serveur.
+# On force les wheels CPU sur Linux ; macOS garde PyPI (backend MPS).
+# Si bascule PC NVIDIA un jour : retirer le marker linux et pointer l'index cu128.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
