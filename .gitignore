@@ -32,3 +32,6 @@ ml/data/**
 dl/data/**
 !dl/data/**/
 !**/.gitkeep
+
+# Photos personnelles (EXIF/GPS) — jamais versionnées.
+dl/Plaques_photos/
