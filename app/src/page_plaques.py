@@ -37,7 +37,7 @@ router = APIRouter(tags=["plaques"])
 BANDEAU = (
     "⚠️ **Démo non validée** — rappel 0,88 mesuré sur le dataset d'entraînement "
     "(international) ; la fiabilité sur photos réelles françaises n'est pas encore mesurée "
-    "(ADR 0002 à venir). Le floutage n'est pas garanti."
+    "(ADR 0008 à venir). Le floutage n'est pas garanti."
 )
 
 _MODELE = None

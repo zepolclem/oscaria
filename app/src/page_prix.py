@@ -22,11 +22,13 @@ import prix as service
 router = APIRouter(tags=["prix"])
 
 MENTION = (
-    "Estimation produite automatiquement par un modèle statistique entraîné sur des annonces "
-    "de particuliers. **Aide à la décision, pas une expertise** : le prix réellement obtenu "
-    "dépend de la négociation, du marché local et de l'état constaté du véhicule. "
-    "La couverture annoncée est une moyenne : elle est meilleure sur les véhicules "
-    "d'entrée de gamme que sur ceux à plus de 20 000 €."
+    "Estimation produite automatiquement par un modèle statistique entraîné sur "
+    "20 915 annonces de **particuliers** publiées sur leboncoin. **Aide à la décision, pas "
+    "une expertise.** Trois limites à connaître : le modèle apprend des **prix demandés**, "
+    "pas des prix de vente conclus — le prix réellement obtenu est généralement plus bas "
+    "après négociation ; l'état du véhicule est **déclaré par le vendeur**, jamais vérifié ; "
+    "et la couverture annoncée est une moyenne, meilleure sur l'entrée de gamme que sur les "
+    "véhicules à plus de 20 000 €."
 )
 
 
@@ -110,8 +112,9 @@ def _estimer(marque, modele, annee, km, energie, boite, etat_libelle, couleur,
     return (
         f"## {_euros(r['bas'])} — {_euros(r['haut'])}\n\n"
         f"Estimation centrale : **{_euros(r['central'])}**\n\n"
-        f"Cette fourchette contient le prix de vente **{part} fois sur 10** "
-        f"({r['couverture']:.1%} mesurés sur 3 977 annonces jamais vues par le modèle).\n\n"
+        f"Cette fourchette contient le **prix affiché** d'annonces comparables "
+        f"**{part} fois sur 10** ({r['couverture']:.1%} mesurés sur 3 977 annonces jamais "
+        f"vues par le modèle).\n\n"
         f"*{MENTION}*"
     )
 
