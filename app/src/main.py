@@ -35,9 +35,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "dl" / "src"))
 from flouter import SEUIL_DEMO, detecter_plaques, flouter_image  # noqa: E402
 
 BANDEAU = (
-    "⚠️ Démo non validée — rappel 0,88 mesuré sur le dataset d'entraînement "
-    "(international) ; la fiabilité sur photos réelles françaises n'est pas encore "
-    "mesurée (ADR 0002 à venir). Le floutage n'est pas garanti."
+    "⚠️ Démo — mesuré sur 87 photos réelles françaises (fiche ADR 0002) : "
+    "9 plaques sur 10 détectées (rappel 0,895), 91,6 % des plaques rendues illisibles, "
+    "4 plaques sur 95 non floutées. Le floutage n'est pas garanti à 100 %."
 )
 
 app = FastAPI(title="OscarIA")
