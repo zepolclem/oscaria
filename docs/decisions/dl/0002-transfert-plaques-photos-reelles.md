@@ -50,8 +50,19 @@ sont francs (plaques minuscules ou très inclinées), pas des détections timide
 - **Fuite résiduelle assumée et affichée : 4 plaques sur 95 sans aucun flou.** Le livrable ne
   doit jamais prétendre à un floutage garanti.
 - **Portée de la mesure** : un seul photographe, un seul appareil, plaques majoritairement UE
-  longues — bonne mesure de domaine, pas une preuve universelle. Un lot multi-sources
-  (leboncoin restauré ou re-scrapé) reste souhaitable pour une fiche 0004 éventuelle.
+  longues — bonne mesure de domaine, pas une preuve universelle. Un lot multi-sources reste
+  souhaitable pour une fiche 0004 éventuelle — **mais pas depuis leboncoin**, voir ci-dessous.
+- **leboncoin est écarté comme domaine de mesure, et pas seulement parce que le dossier était
+  vide.** Constat de terrain vérifié sur échantillon lors d'une tentative antérieure : la
+  plateforme **floute les plaques à la source dans la très grande majorité des annonces**
+  (~95 % estimés), et les photos restantes montrent surtout des profils, habitacles et vues
+  de détail sans plaque exploitable. Sur 200 photos annotées à la main, on récolterait
+  quelques dizaines de plaques au mieux : un dénominateur trop faible pour mesurer un rappel
+  avec une incertitude défendable. leboncoin n'est donc pas un domaine *indisponible*, c'est
+  un **mauvais examen** — non que le modèle y serait bon ou mauvais, mais qu'il n'y a presque
+  rien à y mesurer. Re-scraper la plateforme pour étendre le lot serait du temps perdu.
+  Mesure et raisonnement d'origine : branche `reset/plaques`, fiche
+  `0002-abandon-domaine-leboncoin-plaques.md`.
 - Rappel interne ≤ rappel réel : photos iPhone plus nettes et mieux cadrées que le Kaggle
   moyen — le « domaine réel » de ce lot est plus facile, pas plus dur. À garder en tête.
 - Prochaine étape du pilier : Phase 4 — CLI de floutage par dossier + politique consignée
