@@ -16,5 +16,17 @@ dependencies = [
     "defusedxml>=0.7.1",
 ]
 
+# Marqueur `sys_platform == 'linux'` : macOS reste sur PyPI, donc MPS reste disponible pour
+# l'entraînement local ; Linux prend la variante CPU, ce qui allège l'image de l'application.
+# Sur une machine Linux avec GPU NVIDIA, le basculement CUDA se fait après le `sync` — voir
+# `device.py:recommend_install()`. Commentaire détaillé dans `app/pyproject.toml`.
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },
+]
+torchvision = [
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },
+]
+
 [tool.uv]
 package = false

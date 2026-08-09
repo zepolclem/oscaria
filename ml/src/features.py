@@ -52,7 +52,7 @@ def clean_cars(raw_path: str | Path, max_price: float | None = 50_000) -> pd.Dat
     - parse la cible et les colonnes numériques sales ;
     - dérive les features : boîte auto, garanties, première main, motorisation, âge fin ;
     - garde-fous : prix valide, année plausible ;
-    - applique le périmètre produit `max_price` (défaut 50 000 €, décision ADR 0002) —
+    - applique le périmètre produit `max_price` (défaut 50 000 €, décision ADR 0003) —
       passer `max_price=None` pour les données complètes.
     Le fichier brut n'est jamais modifié.
     """
@@ -107,7 +107,7 @@ def clean_cars(raw_path: str | Path, max_price: float | None = 50_000) -> pd.Dat
     df = df[df["price"].notna()]
     df = df[df["annee"].between(1980, 2026)]
 
-    # périmètre produit (ADR 0002)
+    # périmètre produit (ADR 0003)
     if max_price is not None:
         df = df[df["price"] <= max_price]
     return df

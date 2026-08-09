@@ -54,9 +54,24 @@ def recommend_install() -> str:
         )
     if m["system"] in ("Linux", "Windows"):
         return (
-            "PC avec GPU NVIDIA (RTX 5070 Ti = Blackwell sm_120) → build CUDA 12.8. "
-            "Ex : `uv add torch torchvision --index-url "
-            "https://download.pytorch.org/whl/cu128` (device attendu : cuda). "
-            "Nightly si sm_120 non couvert par le stable."
+            "PC avec GPU NVIDIA (RTX 5070 Ti = Blackwell sm_120) → build CUDA 12.8.\n"
+            "  1. `uv sync --all-packages`            # installe la variante CPU\n"
+            "  2. `uv pip install --torch-backend=cu128 torch torchvision`\n"
+            "  (device attendu : cuda ; nightly si sm_120 n'est pas couvert par le stable)\n"
+            "\n"
+            "  Pourquoi deux étapes. Sous Linux, `pyproject.toml` épingle torch à l'index\n"
+            "  `pytorch-cpu` : c'est ce qui fait tomber l'image Docker de 5,53 Go à 1,5 Go\n"
+            "  en écartant 2,9 Go de pilotes `nvidia-*` inutiles dans un conteneur CPU.\n"
+            "  L'image de l'application et ce PC étant tous deux sous Linux, aucun marqueur\n"
+            "  de plateforme ne peut les distinguer.\n"
+            "\n"
+            "  La forme documentée par uv — deux extras `cpu`/`cu128` plus\n"
+            "  `[tool.uv] conflicts` — a été essayée et ne fonctionne pas dans cet espace de\n"
+            "  travail : uv n'y lit pas `conflicts` (membres en `package = false`, vérifié —\n"
+            "  un nom de paquet volontairement faux n'y déclenche aucune erreur), et rejette\n"
+            "  alors deux index explicites pour un même paquet.\n"
+            "  D'où la surcouche `uv pip`, seule interface qui accepte `--torch-backend`.\n"
+            "  Conséquence à connaître : l'étape 2 installe une version que `uv.lock` ne\n"
+            "  décrit pas, et un `uv sync` ultérieur la réécrasera par la variante CPU."
         )
     return "Machine non reconnue → repli CPU (`uv add torch torchvision`, device : cpu)."

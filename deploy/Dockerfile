@@ -35,6 +35,9 @@ COPY dl/src dl/src
 # Checkpoint versionné (git add -f, décision utilisateur 2026-08-07) : embarqué
 # dans l'image — pas de volume ni de téléchargement au démarrage.
 COPY dl/models/plaques_baseline.pt dl/models/plaques_baseline.pt
+# Modèle du pilier prix (~170 Ko), produit par `ml/src/entrainement.py` et versionné.
+# Même principe que le checkpoint plaques : embarqué, pas téléchargé au démarrage.
+COPY app/models app/models
 ENV PYTHONPATH=/code/dl/src \
     CHEMIN_MODELE=/code/dl/models/plaques_baseline.pt
 
@@ -44,4 +47,8 @@ RUN useradd --create-home oscaria && mkdir -p /data && chown oscaria /data
 USER oscaria
 
 EXPOSE 8000
-CMD ["uvicorn", "app.src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# `--app-dir app/src` plutôt que le module `app.src.main` : les fichiers de app/src
+# s'importent à plat entre eux (`main` -> `page_prix` -> `prix` -> `preparation`), ce qui
+# suppose ce dossier sur sys.path. `PYTHONPATH=/code/dl/src` reste valable en parallèle
+# pour les imports du pilier plaques (`flouter`, `train_plaques`).
+CMD ["uvicorn", "--app-dir", "app/src", "main:app", "--host", "0.0.0.0", "--port", "8000"]

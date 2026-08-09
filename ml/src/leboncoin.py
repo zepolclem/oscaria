@@ -7,8 +7,10 @@ produit par `collecte/scraper/dataset.py`). Sortie : un DataFrame prêt à modé
 Module distinct de `features.py`, qui reste dédié au dataset `french-second-hand-cars` (colonnes
 codées en dur). Les utilitaires génériques, eux, sont réutilisés depuis `features.py`.
 
-Décisions appliquées ici : cf. plan de nettoyage et le Gate EDA
-(`ml/notebooks/leboncoin-private/01_eda_inspection.ipynb`).
+Décisions appliquées ici, consignées dans `docs/decisions/` :
+0002 (dataset retenu et ses limites), 0003 (cible = prix demandé, périmètre et journal de
+nettoyage), 0004 (colonnes écartées). Gate EDA d'origine :
+`ml/notebooks/leboncoin-private/01_eda_inspection.ipynb`.
 """
 
 from __future__ import annotations
@@ -35,8 +37,9 @@ ETATS_ORDONNES = [
 ]
 
 # Modalités d'énergie trop rares pour être apprises séparément (GNV = 3 lignes) : regroupées.
-# Électriques et hybrides sont CONSERVÉS — le motif de l'ADR 0001 (batterie en location rendant
-# le prix non comparable) reposait sur une colonne du dataset 2023 qui n'existe pas ici.
+# Électriques et hybrides sont CONSERVÉS — le motif qui les écartait sur le dataset 2023
+# (batterie en location, rendant le prix non comparable) reposait sur une colonne qui n'existe
+# pas ici. Fiche d'origine supprimée à la remise à zéro du 2026-08-06, cf. historique git.
 ENERGIES_RARES = ["GPL", "Autre", "Gaz Naturel (GNV)"]
 
 # Kilométrage sentinelle : 999 999 n'est pas un kilométrage, c'est un champ rempli au maximum.
@@ -109,7 +112,7 @@ def clean_leboncoin(
     qui rend le nettoyage défendable, pas un effet de bord.
 
     - `min_price` / `max_price` : périmètre de prix. `max_price` vaut 50 000 € par défaut, la
-      décision **ADR 0002** en vigueur ; passer 100_000 ou None pour mesurer d'autres périmètres.
+      décision **ADR 0003** en vigueur ; passer 100_000 ou None pour mesurer d'autres périmètres.
       Le fichier `raw/` n'est jamais modifié.
     - `min_year` : les véhicules d'avant 1980 relèvent de la collection, pas du marché d'occasion
       grand public — leur cote n'est pas comparable (miroir de `features.clean_cars`).
@@ -129,7 +132,7 @@ def clean_leboncoin(
     if max_price is not None:
         avant = len(df)
         df = df[df["prix_eur"] <= max_price]
-        note(f"prix_eur <= {max_price:,.0f} EUR (ADR 0002)", avant)
+        note(f"prix_eur <= {max_price:,.0f} EUR (ADR 0003)", avant)
 
     avant = len(df)
     df = df[df["annee"] >= min_year]

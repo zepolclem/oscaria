@@ -11,14 +11,23 @@ package = false
 [tool.uv.workspace]
 members = ["ml", "dl", "collecte/scraper", "app"]
 
-# Sur Linux (= le serveur Coolify, sans GPU), PyPI livre torch en build CUDA :
-# ~5 Go de bibliothèques NVIDIA inutiles qui ont saturé le disque du serveur.
-# On force les wheels CPU sur Linux ; macOS garde PyPI (backend MPS).
-# Si bascule PC NVIDIA un jour : retirer le marker linux et pointer l'index cu128.
-[tool.uv.sources]
-torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
-torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
-
+# --- Index PyTorch --------------------------------------------------------------------
+# Déclaré ici pour tout l'espace de travail ; ce sont les `[tool.uv.sources]` de `app/` et
+# `dl/` — les deux membres qui dépendent de torch — qui décident ce qui y va.
+#
+# Motif : sur Linux, PyPI sert la variante CUDA de torch — 2,9 Go de pilotes `nvidia-*` plus
+# 651 Mo de `triton`. L'image de l'application tourne sur CPU (`page_plaques.py` fixe
+# `torch.device("cpu")`) : elle embarquait 3,5 Go inutilisables, sur un serveur à 2 vCPU dont
+# le disque avait fini par saturer.
+#
+# `explicit = true` : cet index n'est consulté que pour les paquets qui le désignent
+# nommément. Sans ça, il serait interrogé pour TOUTES les dépendances du projet, avec le
+# risque qu'un paquet quelconque en sorte dans une version inattendue.
+#
+# Un seul index CPU est déclaré : la forme « deux extras cpu/cu128 » de la documentation uv a
+# été essayée et ne fonctionne pas dans cet espace de travail (voir le commentaire détaillé
+# dans `app/pyproject.toml`). Pour une machine Linux avec GPU NVIDIA, le basculement CUDA se
+# fait en surcouche du `sync` — voir `dl/src/device.py:recommend_install()`.
 [[tool.uv.index]]
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
