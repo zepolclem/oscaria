@@ -31,4 +31,9 @@ tombeau au tip de la branche `reset/cardd-baseline`). Certains renvois du dépô
 encore vers elles — notamment `collecte/scraper/README.md` — et sont donc **morts** : ils
 n'ont volontairement pas été renumérotés, pour ne pas les rendre faussement valides.
 
+La branche locale `reset/plaques` est un second tombeau (2026-08-09) : elle porte l'arc
+d'évaluation UC3M-LP, abandonné sans verdict, et un premier entraînement de la baseline
+plaques (AP 0,932) distinct du modèle livré. Clôture consignée dans
+[ADR DL 0003](dl/0003-cloture-arc-leboncoin-uc3m.md).
+
 Voir les plans en cours dans [`docs/plans/`](../plans/).

@@ -28,6 +28,12 @@ en Parquet par `collecte/scraper/dataset.py`.
 | Colonnes à variance nulle | `is_import` = `false` sur 20 915 / 20 915 ; `body` vide sur 20 915 / 20 915 | écartées (cf. fiche 0003) |
 | Photos | 22 204 images associées | alimentent le pilier plaques, pas le pilier Prix |
 
+> **Erratum (2026-08-09)** — la ligne « Photos » ci-dessus est périmée : les photos
+> n'alimentent plus le pilier plaques (plaques floutées à la source par leboncoin, dossier
+> `raw/` constaté vide). Voir la fiche
+> [ADR DL 0003](../dl/0003-cloture-arc-leboncoin-uc3m.md). Sans effet sur la présente
+> décision : le pilier Prix n'utilise que les annonces, pas les photos.
+
 ## Alternatives écartées
 
 - **`french-second-hand-cars`** (dataset public, collecte ~février 2023) : conservé comme

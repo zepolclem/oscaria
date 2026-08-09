@@ -63,7 +63,12 @@ sont francs (plaques minuscules ou très inclinées), pas des détections timide
   rien à y mesurer. Re-scraper la plateforme pour étendre le lot serait du temps perdu.
   Mesure et raisonnement d'origine : branche `reset/plaques`, fiche
   `0002-abandon-domaine-leboncoin-plaques.md`.
+  *Erratum (2026-08-09)* : cette branche est un **tombeau local non poussé** — le renvoi
+  n'est pas résoluble depuis le dépôt distant. L'essentiel de son contenu est repris et
+  soldé dans la fiche [0003](0003-cloture-arc-leboncoin-uc3m.md).
 - Rappel interne ≤ rappel réel : photos iPhone plus nettes et mieux cadrées que le Kaggle
   moyen — le « domaine réel » de ce lot est plus facile, pas plus dur. À garder en tête.
 - Prochaine étape du pilier : Phase 4 — CLI de floutage par dossier + politique consignée
-  (fiche 0003).
+  (fiche 0003). *Erratum (2026-08-09)* : le numéro 0003 a été pris par la
+  [fiche de clôture](0003-cloture-arc-leboncoin-uc3m.md) ; la politique de floutage sera
+  la fiche **0004**.
