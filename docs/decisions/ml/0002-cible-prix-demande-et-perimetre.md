@@ -1,4 +1,4 @@
-# 0003 — Ce que le modèle prédit : un prix **demandé**, dans un périmètre borné
+# ML 0002 — Ce que le modèle prédit : un prix **demandé**, dans un périmètre borné
 
 - **Date** : 2026-08-08
 - **Statut** : Accepté

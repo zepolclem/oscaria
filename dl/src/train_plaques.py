@@ -1,7 +1,7 @@
 """Entraînement de la baseline détection de plaques — pilier plaques OscarIA.
 
 Fine-tuning d'un détecteur torchvision pré-entraîné COCO, tête remplacée pour 2 classes
-(fond + plaque). Choix du modèle et du device consignés dans l'ADR 0001.
+(fond + plaque). Choix du modèle et du device consignés dans l'ADR DL 0001.
 
 Fait mesuré le 2026-08-06 (torch 2.13) : le backward des détecteurs torchvision sur MPS
 ne plante plus mais produit des **gradients corrompus en silence** (norme 2e8 puis NaN dès

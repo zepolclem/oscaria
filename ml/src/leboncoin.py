@@ -112,7 +112,7 @@ def clean_leboncoin(
     qui rend le nettoyage défendable, pas un effet de bord.
 
     - `min_price` / `max_price` : périmètre de prix. `max_price` vaut 50 000 € par défaut, la
-      décision **ADR 0003** en vigueur ; passer 100_000 ou None pour mesurer d'autres périmètres.
+      décision **ADR ML 0002** en vigueur ; passer 100_000 ou None pour mesurer d'autres périmètres.
       Le fichier `raw/` n'est jamais modifié.
     - `min_year` : les véhicules d'avant 1980 relèvent de la collection, pas du marché d'occasion
       grand public — leur cote n'est pas comparable (miroir de `features.clean_cars`).
@@ -132,7 +132,7 @@ def clean_leboncoin(
     if max_price is not None:
         avant = len(df)
         df = df[df["prix_eur"] <= max_price]
-        note(f"prix_eur <= {max_price:,.0f} EUR (ADR 0003)", avant)
+        note(f"prix_eur <= {max_price:,.0f} EUR (ADR ML 0002)", avant)
 
     avant = len(df)
     df = df[df["annee"] >= min_year]

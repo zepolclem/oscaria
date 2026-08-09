@@ -1,4 +1,4 @@
-# 0001 — Baseline détection de plaques : dataset, modèle, device, métriques
+# DL 0001 — Baseline détection de plaques : dataset, modèle, device, métriques
 
 - **Date** : 2026-08-06
 - **Statut** : Accepté

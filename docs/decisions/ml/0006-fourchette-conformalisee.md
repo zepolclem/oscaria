@@ -1,4 +1,4 @@
-# 0007 — Fourchette de prix : régression quantile conformalisée, et jusqu'où la promesse tient
+# ML 0006 — Fourchette de prix : régression quantile conformalisée, et jusqu'où la promesse tient
 
 - **Date** : 2026-08-08
 - **Statut** : Accepté
@@ -137,7 +137,7 @@ rapportée décrirait un modèle que le service ne sert pas.
 - La fourchette est **plus large** que celle du mécanisme précédent (5 478 € contre 3 040 €
   pour une Clio de référence). Elle n'est pas moins bonne : l'ancienne était trop étroite pour
   ce qu'elle prétendait couvrir.
-- Rappel de la fiche 0003 : la couverture porte sur le **prix demandé** d'annonces
+- Rappel de la fiche 0002 : la couverture porte sur le **prix demandé** d'annonces
   comparables, pas sur un prix de vente conclu.
 - Une couverture conditionnelle (garantie par segment, et non en moyenne) est le prolongement
   naturel. Non instruite.

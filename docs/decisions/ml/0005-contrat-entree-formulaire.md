@@ -1,4 +1,4 @@
-# 0006 — Contrat d'entrée : quelles questions on pose au vendeur
+# ML 0005 — Contrat d'entrée : quelles questions on pose au vendeur
 
 - **Date** : 2026-08-08
 - **Statut** : Accepté
@@ -42,7 +42,7 @@ a été retirée.
 | **Bilan** | **1 521 € → 1 471 €**, avec un champ de moins |
 
 Retirer `region` **améliore** le modèle. Ce n'est pas un paradoxe : son importance par
-permutation valait 0,0014 (fiche 0005). Une variable sans information n'est pas neutre — elle
+permutation valait 0,0014 (fiche 0004). Une variable sans information n'est pas neutre — elle
 fournit du bruit dans lequel l'arbre peut creuser des coupes qui ne généralisent pas. La
 demande produit et l'intérêt du modèle allaient ici dans le même sens.
 

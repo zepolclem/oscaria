@@ -1,4 +1,4 @@
-# 0002 — Dataset `leboncoin-private` retenu pour le pilier Prix
+# ML 0001 — Dataset `leboncoin-private` retenu pour le pilier Prix
 
 - **Date** : 2026-08-08
 - **Statut** : Accepté
@@ -25,7 +25,7 @@ en Parquet par `collecte/scraper/dataset.py`.
 | Vendeurs | `owner_type` = `private` sur **20 915 / 20 915** | correspond exactement à la cible produit (vendeur particulier) |
 | Complétude | marque, modèle, année, kilométrage, énergie, boîte, état : renseignés sur la quasi-totalité | pas d'imputation massive nécessaire |
 | Attributs riches | bloc JSON `attributes` : puissance, portes, places, Crit'Air, contrôle technique, date de mise en circulation | permet des variables que les colonnes « chaudes » du Parquet ne portent pas |
-| Colonnes à variance nulle | `is_import` = `false` sur 20 915 / 20 915 ; `body` vide sur 20 915 / 20 915 | écartées (cf. fiche 0004) |
+| Colonnes à variance nulle | `is_import` = `false` sur 20 915 / 20 915 ; `body` vide sur 20 915 / 20 915 | écartées (cf. fiche 0003) |
 | Photos | 22 204 images associées | alimentent le pilier plaques, pas le pilier Prix |
 
 ## Alternatives écartées
@@ -49,7 +49,7 @@ honnêtement affirmer.
 2. **Aucun historique d'annonce.** Une seule photographie du marché, à une date. Impossible
    d'en tirer un délai de vente ou une saisonnalité — le pilier Date reste hors d'atteinte
    avec ces données seules.
-3. **Aucun prix de vente conclu.** Cf. fiche 0003 : la cible est un prix demandé.
+3. **Aucun prix de vente conclu.** Cf. fiche 0002 : la cible est un prix demandé.
 4. **État déclaratif.** `vehicle_damage` est saisi par le vendeur, jamais vérifié. Un vendeur
    optimiste décrit sa voiture en « bon état » et la met en vente au prix correspondant : le
    modèle apprend la cohérence entre déclaration et prix demandé, pas la réalité mécanique.

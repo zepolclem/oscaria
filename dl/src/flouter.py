@@ -2,11 +2,11 @@
 
 Deux fonctions : `detecter_plaques()` (inférence du checkpoint baseline sur UNE image)
 et `flouter_image()` (flou gaussien sur les boîtes, élargies d'une marge). La CLI de
-traitement par dossier et la politique de floutage définitive (ADR 0003) viendront en
+traitement par dossier et la politique de floutage définitive (ADR DL 0003) viendront en
 Phase 4 ; ce module porte le minimum nécessaire à la démo web.
 
 Seuil de score par défaut : 0,3 — le plus permissif mesuré au carnet 02 (rappel 0,876,
-précision 0,904 en validation interne). Hiérarchie ADR 0001 : rappel prioritaire, un
+précision 0,904 en validation interne). Hiérarchie ADR DL 0001 : rappel prioritaire, un
 faux positif ne coûte qu'un flou en trop. Ce seuil sera re-jugé par la Phase 3.
 """
 

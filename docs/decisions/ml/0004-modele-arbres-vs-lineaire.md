@@ -1,4 +1,4 @@
-# 0005 — Modèle retenu : arbres plutôt que linéaire, et ce que ça coûte en explicabilité
+# ML 0004 — Modèle retenu : arbres plutôt que linéaire, et ce que ça coûte en explicabilité
 
 - **Date** : 2026-08-08
 - **Statut** : Accepté
@@ -36,7 +36,7 @@ Trois raisons, dans l'ordre de poids :
 3. **Le catégoriel natif.** `HistGradientBoosting` traite les variables catégorielles
    directement, sans les transformer en colonnes 0/1 : 15 colonnes au lieu de 896. Il gère
    aussi nativement les valeurs manquantes, ce qui permet des champs de formulaire facultatifs
-   (cf. fiche 0006).
+   (cf. fiche 0005).
 
 ### Le fait qui a tranché : le linéaire n'était pas lisible non plus
 
@@ -85,7 +85,7 @@ perte d'explicabilité est réelle et n'est pas compensée.
   0,879). Écartée.
 - **Forêt aléatoire** : correcte (1 625 €) mais dominée, et sans catégoriel natif.
 - **`TargetEncoder` sur `modele`** : dégradait le linéaire (2 600 € contre 2 301 €) ;
-  341 modèles sur 758 sont vus trois fois ou moins au train. Cf. fiche 0006 pour l'encodage
+  341 modèles sur 758 sont vus trois fois ou moins au train. Cf. fiche 0005 pour l'encodage
   finalement retenu.
 - **Réseau de neurones** : YAGNI sur 19 882 lignes tabulaires, où le gradient boosting est
   l'état de l'art. Aurait aggravé l'explicabilité sans contrepartie mesurée.
@@ -93,7 +93,7 @@ perte d'explicabilité est réelle et n'est pas compensée.
 ## Conséquences
 
 - Le modèle **prédit bien sans expliquer précisément**. C'est une limite assumée, compensée
-  au niveau du produit par la fourchette d'incertitude (fiche 0007) plutôt que par une
+  au niveau du produit par la fourchette d'incertitude (fiche 0006) plutôt que par une
   explication de la prédiction.
 - Le carnet 03 reste la pièce d'explicabilité du dossier : il donne les ordres de grandeur
   (un écart-type d'âge ≈ −3 325 €, de kilométrage ≈ −1 752 €, palier premium ≈ +3 162 €).

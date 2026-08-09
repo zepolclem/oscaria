@@ -49,7 +49,7 @@ def split_train_val(exemples, part_val: float = 0.2, graine: int = 42):
     """Split par image, mélangé avec une graine fixe → reproductible (~346/87 sur 433).
 
     Split par image et non par voiture : l'identité des véhicules n'est pas documentée
-    dans ce dataset (limite consignée dans l'EDA et l'ADR 0001).
+    dans ce dataset (limite consignée dans l'EDA et l'ADR DL 0001).
     """
     indices = list(range(len(exemples)))
     random.Random(graine).shuffle(indices)
