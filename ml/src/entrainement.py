@@ -70,6 +70,27 @@ QUANTILES = {"q10": 0.1, "q50": 0.5, "q90": 0.9}
 # plus larges, donc moins actionnables pour un vendeur ; plus haut, une promesse plus fragile.
 ALPHA = 0.2
 
+# Réglages issus de la recherche du carnet 07 (50 tirages, CV 5 plis sur le fit seul) :
+# −84 € de MAE contre les défauts. Le motif : apprentissage lent et long (0,037 × 750
+# itérations au lieu de 0,1 × 100) avec des arbres plus riches (96 feuilles au lieu de 31).
+# `early_stopping=False` : c'est ainsi que la recherche a mesuré ces réglages — le laisser
+# en « auto » entraînerait un autre modèle que celui qui a été choisi.
+#
+# Appliqués au CENTRAL SEULEMENT. Essayés sur les trois quantiles : MAE équivalente mais la
+# couverture par tranche s'effondrait au-delà de 10 k€ (64 % sur le haut de gamme contre
+# 73 % avec les bornes aux défauts) — des bornes plus « sûres d'elles » que la constante
+# conformale, globale, ne répare qu'en moyenne. La précision ne vaut pas une promesse
+# affaiblie là où elle était déjà la plus fragile (ADR ML 0008).
+HYPERPARAMETRES_CENTRAL = {
+    "learning_rate": 0.037,
+    "max_iter": 750,
+    "max_leaf_nodes": 96,
+    "min_samples_leaf": 10,
+    "l2_regularization": 0.025,
+    "max_depth": None,
+    "early_stopping": False,
+}
+
 
 def conformaliser(lo: np.ndarray, hi: np.ndarray, y: np.ndarray, alpha: float = ALPHA) -> float:
     """Constante d'élargissement `Q` mesurée sur le jeu de calibration (méthode CQR).
@@ -153,9 +174,10 @@ def entrainer() -> dict:
     # test reste bit-pour-bit le même, donc les MAE restent comparables (1 425 / 1 475 /
     # 2 301 €). La calibration est prélevée DANS l'ancien train, pas ailleurs.
     #
-    # Coût assumé : l'ajustement perd 25 % de ses données (15 905 -> 11 929). C'est le prix
-    # d'une garantie de couverture — `Q` doit être mesuré sur des données que les modèles
-    # n'ont jamais vues, sinon il mesure du connu et la garantie s'évapore.
+    # La contrainte « jamais vu » ne pèse que sur les BORNES : `Q` doit être mesuré sur des
+    # données que q10 et q90 n'ont pas apprises, sinon il mesure du connu et la garantie
+    # s'évapore. Le central, lui, ne porte aucune garantie (il est même rabattu dans la
+    # fourchette quand il en sort) : il a le droit d'apprendre aussi sur la calibration.
     df_train, df_test = train_test_split(df, test_size=0.20, random_state=42)
     df_fit, df_cal = train_test_split(df_train, test_size=0.25, random_state=42)
 
@@ -181,15 +203,27 @@ def entrainer() -> dict:
     X_test = construire_jeu(df_test, categories=categories)
     y_fit, y_cal, y_test = df_fit["prix_eur"], df_cal["prix_eur"], df_test["prix_eur"]
 
-    # Trois modèles, mêmes hyperparamètres que la marche précédente — seule la fonction de
-    # perte change. `loss="quantile"` est la perte pinball : asymétrique, elle pénalise plus
-    # cher la sous-estimation que la sur-estimation pour un quantile haut, et l'inverse pour
-    # un quantile bas. C'est ce qui fait apprendre un quantile plutôt qu'une moyenne.
+    # Trois modèles, mêmes hyperparamètres — seule la fonction de perte change.
+    # `loss="quantile"` est la perte pinball : asymétrique, elle pénalise plus cher la
+    # sous-estimation que la sur-estimation pour un quantile haut, et l'inverse pour un
+    # quantile bas. C'est ce qui fait apprendre un quantile plutôt qu'une moyenne.
+    #
+    # Jeux d'apprentissage ASYMÉTRIQUES, et c'est voulu : les bornes n'apprennent que sur le
+    # fit (la calibration doit leur rester inconnue pour que `Q` vaille quelque chose), le
+    # central apprend sur fit + calibration (+33 % de données) puisqu'il ne promet rien —
+    # mesuré : MAE 1 482 -> voir plan `2026-08-10-precision-central-hyperparametres.md`.
+    X_central = pd.concat([X_fit, X_cal])
+    y_central = pd.concat([y_fit, y_cal])
+
+    def _quantile(q: float, **hyper) -> HistGradientBoostingRegressor:
+        return HistGradientBoostingRegressor(
+            loss="quantile", quantile=q, categorical_features=CAT, random_state=42, **hyper
+        )
+
     modeles = {
-        nom: HistGradientBoostingRegressor(
-            loss="quantile", quantile=q, categorical_features=CAT, random_state=42
-        ).fit(X_fit, y_fit)
-        for nom, q in QUANTILES.items()
+        "q10": _quantile(QUANTILES["q10"]).fit(X_fit, y_fit),
+        "q50": _quantile(QUANTILES["q50"], **HYPERPARAMETRES_CENTRAL).fit(X_central, y_central),
+        "q90": _quantile(QUANTILES["q90"]).fit(X_fit, y_fit),
     }
 
     # Calibration : de combien les bornes ratent, sur des données jamais vues.

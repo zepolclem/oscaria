@@ -1943,38 +1943,38 @@
     {
       "min": 500,
       "max": 2000,
-      "mae": 698.0
+      "mae": 674.0
     },
     {
       "min": 2000,
       "max": 5000,
-      "mae": 946.0
+      "mae": 930.0
     },
     {
       "min": 5000,
       "max": 10000,
-      "mae": 1576.0
+      "mae": 1459.0
     },
     {
       "min": 10000,
       "max": 20000,
-      "mae": 2251.0
+      "mae": 2060.0
     },
     {
       "min": 20000,
       "max": 50000,
-      "mae": 5077.0
+      "mae": 4301.0
     }
   ],
   "metriques": {
-    "mae": 1482,
-    "rmse": 2721,
-    "r2": 0.871,
+    "mae": 1366,
+    "rmse": 2428,
+    "r2": 0.897,
     "n_fit": 11928,
     "n_cal": 3977,
     "n_test": 3977,
     "predictions_negatives": 0,
-    "croisements_quantiles": 50
+    "croisements_quantiles": 51
   },
   "version_sklearn": "1.9.0"
 }
