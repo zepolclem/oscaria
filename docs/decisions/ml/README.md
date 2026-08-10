@@ -16,3 +16,4 @@ espace ; une fiche se cite « ADR ML 0004 ».
 | 0004 | [Arbres vs linéaire](0004-modele-arbres-vs-lineaire.md) | 2026-08-08 | HistGradientBoosting retenu (1 475 € contre 2 301 €, 0 prix négatif) ; le linéaire n'était pas lisible non plus — marque et modèle emboîtés |
 | 0005 | [Contrat d'entrée du formulaire](0005-contrat-entree-formulaire.md) | 2026-08-08 | 7 champs obligatoires + 7 facultatifs en valeurs manquantes natives ; chaque changement chiffré, états regroupés à 5 crans |
 | 0006 | [Fourchette conformalisée](0006-fourchette-conformalisee.md) | 2026-08-08 | quantiles + CQR, couverture **79,5 % mesurée** pour une cible de 80 % ; garantie marginale et non conditionnelle (72 % au-delà de 20 000 €) |
+| 0007 | [Contrat d'entrée v2](0007-contrat-entree-v2.md) | 2026-08-10 | les champs vides biaisaient le central de −506 € (médian) — 8 champs tous obligatoires, +34 € de MAE assumés ; couverture mesurée remonte à 79,98 % |

@@ -4,11 +4,6 @@
     "age",
     "kilometrage",
     "puissance_din",
-    "puissance_fisc",
-    "portes",
-    "places",
-    "critair",
-    "ct_valide_jusqu_a",
     "boite_auto",
     "niveau",
     "modele_freq"
@@ -16,7 +11,6 @@
   "features_cat": [
     "energie_grp",
     "marque",
-    "couleur",
     "etat"
   ],
   "categorie_inconnue": "(inconnu)",
@@ -113,33 +107,12 @@
       "VOLKSWAGEN",
       "VOLVO"
     ],
-    "couleur": [
-      "(inconnu)",
-      "Argent",
-      "Autre",
-      "Beige",
-      "Blanc",
-      "Bleu",
-      "Bordeaux",
-      "Doré",
-      "Gris",
-      "Ivoire",
-      "Jaune",
-      "Marron",
-      "Noir",
-      "Orange",
-      "Rose",
-      "Rouge",
-      "Vert",
-      "Violet"
-    ],
     "etat": [
       "(inconnu)",
-      "1_hors_service",
-      "2_a_reparer",
-      "3_usure",
-      "4_bon",
-      "5_excellent"
+      "1_a_reparer",
+      "2_usure",
+      "3_bon",
+      "4_excellent"
     ]
   },
   "niveau_par_marque": {
@@ -1902,14 +1875,14 @@
     ]
   },
   "etats_groupes": {
-    "not_drivable": "1_hors_service",
-    "damaged": "1_hors_service",
-    "major_repairs_needed": "1_hors_service",
-    "minor_repairs_needed": "2_a_reparer",
-    "normal_wear_and_tear": "3_usure",
-    "good_overall_condition": "4_bon",
-    "undamaged": "4_bon",
-    "excellent_condition": "5_excellent"
+    "not_drivable": "1_a_reparer",
+    "damaged": "1_a_reparer",
+    "major_repairs_needed": "1_a_reparer",
+    "minor_repairs_needed": "1_a_reparer",
+    "normal_wear_and_tear": "2_usure",
+    "good_overall_condition": "3_bon",
+    "undamaged": "3_bon",
+    "excellent_condition": "4_excellent"
   },
   "date_reference": "2026-07-27T18:57:46.412073",
   "quantiles": {
@@ -1918,44 +1891,44 @@
     "q90": 0.9
   },
   "alpha": 0.2,
-  "conformal_q": 145.35,
-  "couverture_test": 0.7948,
-  "largeur_mediane_test": 3399,
+  "conformal_q": 143.88,
+  "couverture_test": 0.7998,
+  "largeur_mediane_test": 3605,
   "couverture_par_tranche": [
     {
       "min": 500,
       "max": 2000,
       "n": 1061,
-      "couverture": 0.838,
-      "largeur_mediane": 1914.0
+      "couverture": 0.854,
+      "largeur_mediane": 2094.0
     },
     {
       "min": 2000,
       "max": 5000,
       "n": 1101,
-      "couverture": 0.819,
-      "largeur_mediane": 2874.0
+      "couverture": 0.814,
+      "largeur_mediane": 3003.0
     },
     {
       "min": 5000,
       "max": 10000,
       "n": 831,
-      "couverture": 0.785,
-      "largeur_mediane": 4214.0
+      "couverture": 0.794,
+      "largeur_mediane": 4315.0
     },
     {
       "min": 10000,
       "max": 20000,
       "n": 657,
-      "couverture": 0.752,
-      "largeur_mediane": 6072.0
+      "couverture": 0.747,
+      "largeur_mediane": 5884.0
     },
     {
       "min": 20000,
       "max": 50000,
       "n": 250,
-      "couverture": 0.72,
-      "largeur_mediane": 13744.0
+      "couverture": 0.728,
+      "largeur_mediane": 13339.0
     }
   ],
   "tranches_bornes": [
@@ -1970,38 +1943,38 @@
     {
       "min": 500,
       "max": 2000,
-      "mae": 669.0
+      "mae": 698.0
     },
     {
       "min": 2000,
       "max": 5000,
-      "mae": 915.0
+      "mae": 946.0
     },
     {
       "min": 5000,
       "max": 10000,
-      "mae": 1517.0
+      "mae": 1576.0
     },
     {
       "min": 10000,
       "max": 20000,
-      "mae": 2227.0
+      "mae": 2251.0
     },
     {
       "min": 20000,
       "max": 50000,
-      "mae": 5094.0
+      "mae": 5077.0
     }
   ],
   "metriques": {
-    "mae": 1448,
-    "rmse": 2677,
-    "r2": 0.875,
+    "mae": 1482,
+    "rmse": 2721,
+    "r2": 0.871,
     "n_fit": 11928,
     "n_cal": 3977,
     "n_test": 3977,
     "predictions_negatives": 0,
-    "croisements_quantiles": 64
+    "croisements_quantiles": 50
   },
   "version_sklearn": "1.9.0"
 }

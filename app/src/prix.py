@@ -63,7 +63,6 @@ DATE_REFERENCE = pd.Timestamp(_meta["date_reference"])
 ETATS = ETATS_LIBELLES
 
 MARQUES = [m for m in CATEGORIES["marque"] if m != _meta["categorie_inconnue"]]
-COULEURS = [c for c in CATEGORIES["couleur"] if c != _meta["categorie_inconnue"]]
 ENERGIES = _meta["energies_saisissables"]
 BOITES = ["Manuelle", "Automatique"]
 MODELES_PAR_MARQUE: dict[str, list[str]] = _meta["modeles_par_marque"]
@@ -98,11 +97,6 @@ def estimer(saisie: dict[str, Any]) -> dict[str, Any]:
         "age": _age(saisie["annee_mec"]),
         "kilometrage": saisie.get("kilometrage"),
         "puissance_din": saisie.get("puissance_din"),
-        "puissance_fisc": saisie.get("puissance_fisc"),
-        "portes": saisie.get("portes"),
-        "places": saisie.get("places"),
-        "critair": saisie.get("critair"),
-        "ct_valide_jusqu_a": saisie.get("ct_valide_jusqu_a"),
         "boite_auto": 1 if saisie.get("boite") == "Automatique" else 0,
         # Marque hors table premium -> NaN, et non 0 : « pas de palier connu » n'est pas
         # « généraliste ». HistGradientBoosting apprend où envoyer les valeurs manquantes.
@@ -117,7 +111,6 @@ def estimer(saisie: dict[str, Any]) -> dict[str, Any]:
         # comme à l'entraînement.
         "energie_grp": "Autre" if energie in _meta["energies_rares"] else energie,
         "marque": marque,
-        "couleur": saisie.get("couleur"),
         "etat": saisie.get("etat"),
     }
 

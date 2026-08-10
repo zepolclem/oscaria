@@ -17,47 +17,53 @@ from __future__ import annotations
 
 import pandas as pd
 
-# Jeu de variables. Dérivé du carnet 04, puis remanié pour alléger le formulaire — chaque
-# écart est chiffré en validation croisée 5 plis, pas décidé au jugé :
+# Jeu de variables — contrat v2, **tous champs obligatoires**. Le carnet 05 a montré que les
+# champs facultatifs vides tiraient l'estimation vers le bas : le modèle avait appris des
+# annonces que « champ manquant = annonce bâclée = pas cher », signal sans aucun sens pour un
+# vendeur qui ne connaît pas la valeur. Le v2 supprime la cause : plus de champ facultatif,
+# et un contrat réduit aux variables qui portent le prix. Chaque écart est chiffré en
+# validation croisée 5 plis (carnet 06), pas décidé au jugé :
 #
-#   - `region` RETIRÉE            −14 € de MAE. Importance par permutation 0,0014 au carnet
-#                                 04 : elle n'apportait pas d'information, seulement du bruit
-#                                 dans lequel l'arbre creusait des coupes non généralisables.
-#   - `age` depuis l'ANNÉE seule   −4 € de MAE. Le formulaire ne demande plus le mois de mise
-#                                 en circulation ; la perte de finesse est dans le bruit.
-#   - `modele_freq` AJOUTÉE       −35 € de MAE. Le modèle exact du véhicule, encodé par sa
-#                                 fréquence dans le train (cf. plus bas).
+#   - `region` RETIRÉE (v1)       −14 € de MAE. Importance par permutation 0,0014.
+#   - `age` depuis l'ANNÉE seule   −4 € de MAE (v1). Le formulaire ne demande plus le mois.
+#   - `modele_freq` AJOUTÉE (v1)  −35 € de MAE. Le modèle exact, encodé par sa fréquence.
+#   - `critair`, `ct` RETIRÉS      −4 € de MAE : du bruit (importances 0,0002 et −0,0005).
+#   - `couleur` RETIRÉE           −15 € de MAE : du bruit aussi (0,0001).
+#   - `puissance_fisc` RETIRÉE    +11 € de MAE : redondante avec la DIN (0,045 vs 0,208).
+#   - `portes`, `places` RETIRÉES +14 € de MAE : le seul retrait non trivial, assumé.
+#   - états 5 -> 4 crans          +17 € de MAE (cf. ETATS_GROUPES ci-dessous).
+#
+# Cumul v2 : +43 € de MAE, le prix d'un formulaire de 8 champs qu'un vendeur remplit en
+# entier — contre un biais de −506 € (médian) quand il laissait les champs vides.
 #
 # Ces listes sont le **contrat d'entrée** du service : les modifier impose de ré-entraîner ET
 # de reprendre le formulaire, jamais l'un sans l'autre.
-NUM = ["age", "kilometrage", "puissance_din", "puissance_fisc", "portes", "places",
-       "critair", "ct_valide_jusqu_a", "boite_auto", "niveau", "modele_freq"]
-CAT = ["energie_grp", "marque", "couleur", "etat"]
+NUM = ["age", "kilometrage", "puissance_din", "boite_auto", "niveau", "modele_freq"]
+CAT = ["energie_grp", "marque", "etat"]
 
-# Regroupement de l'échelle d'état déclaré, de 8 crans à 5. Calé sur les **prix médians
-# observés**, pas sur le sens commun : `not_drivable` (1 300 €), `damaged` et
-# `major_repairs_needed` (1 500 € chacun) sont indiscernables en prix, les fusionner ne perd
-# rien ; `undamaged` (9 000 €) et `excellent_condition` (16 000 €) sont séparés par 7 000 €,
-# les fusionner en perdrait. Mesuré : 1 467 € de MAE contre 1 471 € à 8 crans — le
-# regroupement est même très légèrement gagnant.
+# Regroupement de l'échelle d'état déclaré, de 8 crans à 4. Calé sur les **prix médians
+# observés**, pas sur le sens commun : `not_drivable` (1 300 €), `damaged`,
+# `major_repairs_needed` (1 500 € chacun) et `minor_repairs_needed` (~2 000 €) restent
+# proches, les fusionner coûte peu (+17 € de MAE mesurés au carnet 06, fusion comprise dans
+# le passage 5 -> 4 crans) ; `undamaged` (9 000 €) et `excellent_condition` (16 000 €) sont
+# séparés par 7 000 €, les fusionner perdrait vraiment — ils restent distincts.
 ETATS_GROUPES = {
-    "not_drivable": "1_hors_service",
-    "damaged": "1_hors_service",
-    "major_repairs_needed": "1_hors_service",
-    "minor_repairs_needed": "2_a_reparer",
-    "normal_wear_and_tear": "3_usure",
-    "good_overall_condition": "4_bon",
-    "undamaged": "4_bon",
-    "excellent_condition": "5_excellent",
+    "not_drivable": "1_a_reparer",
+    "damaged": "1_a_reparer",
+    "major_repairs_needed": "1_a_reparer",
+    "minor_repairs_needed": "1_a_reparer",
+    "normal_wear_and_tear": "2_usure",
+    "good_overall_condition": "3_bon",
+    "undamaged": "3_bon",
+    "excellent_condition": "4_excellent",
 }
 
 # Libellés du formulaire -> cran du modèle. Ordre d'affichage, du pire au meilleur.
 ETATS_LIBELLES = {
-    "Ne roule pas ou grosses réparations": "1_hors_service",
-    "Petites réparations à prévoir": "2_a_reparer",
-    "Usure normale": "3_usure",
-    "Bon état": "4_bon",
-    "Excellent état": "5_excellent",
+    "Ne roule pas ou réparations à prévoir": "1_a_reparer",
+    "Usure normale": "2_usure",
+    "Bon état": "3_bon",
+    "Excellent état": "4_excellent",
 }
 
 # Fréquence attribuée à un modèle jamais vu à l'entraînement. Zéro plutôt que « valeur
