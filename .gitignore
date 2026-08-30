@@ -35,3 +35,9 @@ dl/data/**
 
 # Photos personnelles (EXIF/GPS) — jamais versionnées.
 dl/Plaques_photos/
+
+# Préparation personnelle de la soutenance et exports ponctuels : jamais publiés par défaut.
+docs/livret-bloc-*.md
+docs/soutenance-questions-reponses.md
+output/
+tmp/
